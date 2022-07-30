@@ -1,0 +1,69 @@
+function createMotdFiles():
+    create file "plugins/SkriptClub/Motd/config.yml"
+    create file "plugins/SkriptClub/Motd/author.yml"
+    wait 1 tick
+
+    write "## KONFIGURACJA 1 LINIJKI CONFIGU: Tutaj wpisz nazwe pliku w jakim trzymasz plik. (np. Motd.sk | WAZNE JEST ABY BYLO .SK NA KONCU!)" at line 1 to file "plugins/SkriptClub/Motd/config.yml"
+    set yml value "Nazwa pliku" from file "plugins/SkriptClub/Motd/config.yml" to "Motd.sk"
+
+    write "" at line 3 to file "plugins/SkriptClub/Motd/config.yml"
+
+    write "## KONFIGURACJA 2 LINIJKI CONFIGU:  Napis ktory ma byc jako pierwsza linijka, np -----  MOJEIP.PL  -----" at line 4 to file "plugins/SkriptClub/Motd/config.yml"
+    set yml value "Header" from file "plugins/SkriptClub/Motd/config.yml" to "&8&l&m+-=----&r  &f&lZEROMC.PL  &8&l&m----=-+"
+
+    write "## KONFIGURACJA 3 LINIJKI CONFIGU:  Pierwsza losowa linijka np. Kiedy do nas dolaczysz?" at line 6 to file "plugins/SkriptClub/Motd/config.yml"
+    set yml value "Random 1" from file "plugins/SkriptClub/Motd/config.yml" to "     &7Ahhh... na co &f&nczekasz&7?"
+
+    write "## KONFIGURACJA 4 LINIJKI CONFIGU:  Pierwsza losowa linijka np. Discord: https://dc.zeromc.pl/" at line 8 to file "plugins/SkriptClub/Motd/config.yml"
+    set yml value "Random 2" from file "plugins/SkriptClub/Motd/config.yml" to "     &7Mordini, wbijesz na &f&nnajlepszy serwer&7?"
+
+    write "## KONFIGURACJA 5 LINIJKI CONFIGU:  Pierwsza losowa linijka np. Dolacz do naszej zalogi!" at line 10 to file "plugins/SkriptClub/Motd/config.yml"
+    set yml value "Random 3" from file "plugins/SkriptClub/Motd/config.yml" to "     &7Czekamy tylko na &f&nciebie&7!"
+
+    write "## KONFIGURACJA 6 LINIJKI CONFIGU:  Skrypt ma byc automatycznie aktualizowany? (ON/OFF)" at line 13 to file "plugins/SkriptClub/Motd/config.yml"
+
+    set yml value "AutoUpdate" from file "plugins/SkriptClub/Motd/config.yml" to "ON"
+
+function varMotdFiles():
+    set {Line1} to yaml value "Header" from file "plugins/SkriptClub/Motd/config.yml"
+    set {RandomLine2(1)} to yaml value "Random 1" from file "plugins/SkriptClub/Motd/config.yml"
+    set {RandomLine2(2)} to yaml value "Random 2" from file "plugins/SkriptClub/Motd/config.yml"
+    set {RandomLine2(3)} to yaml value "Random 3" from file "plugins/SkriptClub/Motd/config.yml"
+    set {Config::AutoUpdate} to yaml value "AutoUpdate" from file "plugins/SkriptClub/Motd/config.yml"
+    set {Config::FileName} to yaml value "Nazwa pliku" from file "plugins/SkriptClub/Motd/config.yml"
+
+on load:
+    if file "plugins/SkriptClub/Motd" exists:
+        send "" to console
+        send "&8[ &2&nMOTD&r &8]  &aSkrypt na &2&nMOTD&a zostal poprawnie wczytany." to console
+        send "&8[ &2&nMOTD&r &8]  &aSprawdzam czy są jakieś &2&naktualizacje&a.." to console
+        send "" to console
+        if {Config::AutoUpdate} = "ON":
+            varMotdFiles()
+            set {current} to "1.0"
+            set {update} to text from url "https://raw.githubusercontent.com/h4m1337/Motd/main/Skrypt/Version.txt"
+            if {update} is not {current}:
+                download file from "https://raw.githubusercontent.com/h4m1337/Motd/main/Skrypt/Skript.sk" to file "plugins/Skript/scripts/%{Config::FileName}%"
+                execute console command "skript reload %{Config::FileName}%"
+                send "&8[ &2&nMOTD&r &8]  &aPobrano najnowsza wersje &2&n(%{current}%)&a skryptu na &2&nMOTD&a." to console
+                stop
+            else:
+                send "&8[ &2&nMOTD&r &8]  &aKorzystasz z najnowszej wersji &2&nMOTD&a. &8(&2&n%{current}%&8)" to console
+                stop
+        else:
+            send "&8[ &2&nMOTD&r &8]  &aDostepna jest nowa wersja skryptu!" to console
+            send "&8[ &2&nMOTD&r &8]  &aUstaw w Configu &2&nAUTOUPDATE&a na &2&nON&a." to console
+            stop
+
+    else:
+        createMotdFiles()
+        stop
+# /ZAKUPIL W NEXT UPDATE :DDD
+
+on server list ping:
+    chance of 50%:
+        set motd to "%{Line1}%%nl%%{RandomLine2(1)}%"
+    chance of 50%:  
+        set motd to "%{Line1}%%nl%%{RandomLine2(1)}%"
+    chance of 50%:
+        set motd to "%{Line1}%%nl%%{RandomLine2(1)}%"
