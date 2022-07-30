@@ -1,0 +1,2 @@
+# motd
+Skrypt na MOTD 🚀
